@@ -19,20 +19,25 @@ var products = [
     }
 ];
 
-var isEdit = false;
+var isEditProduct = false;
 var tempProductId = 0;
+
+function handleisEditProduct() {
+    isEditProduct = !isEditProduct;
+    return isEditProduct;
+};
 //Hàm lấy ra đối tượng
 function getHTML(seletor) {
     var html = document.querySelector(seletor);
-    return html
-}
+    return html;
+};
 
 //Hàm render sản phẩm
 function renderProducts() {
     var producstElement = getHTML(".product");
     var itemElement = '';
     var productsLength = products.length;
-    for(i = 0; i < productsLength; i++) {
+    for (i = 0; i < productsLength; i++) {
         itemElement += `
                         <li id=${i} class="item">
                                 <div class="item-delete" onclick="deleteProduct()">
@@ -45,25 +50,24 @@ function renderProducts() {
                                     <div class="item-btn-cart">
                                         <i class="fa-solid fa-cart-shopping"></i>
                                     </div>
-                                    <div class="item-btn-buy">Buy</div>
                                 </button>
                                 <button class="item-btn-edit" onclick="editProduct()">Edit</button>
                             </li>
                         `
-                    };
-        producstElement.innerHTML = itemElement;
+    };
+    producstElement.innerHTML = itemElement;
 };
 
 //Hàm lấy giá trị input
 function getInputValue(selector) {
     var inputValue = getHTML(selector).value;
-    return inputValue
-}
+    return inputValue;
+};
 
 //Hàm tạo giá trị input
 function setInputValue(selector, value) {
     getHTML(selector).value = value;
-}
+};
 
 //Hàm tạo sản phẩm
 function createProduct() {
@@ -76,39 +80,41 @@ function createProduct() {
         name: nameInputValue,
         description: desInputValue,
         price: priceInputValue
-    }
+    };
     products.push(newProduct);
 };
 
 //Hàm focus vào input 
 function focusInput() {
-   setInputValue("#name", "");
-   setInputValue("#description", "");
-   setInputValue("#price", "");
-}
+    setInputValue("#name", "");
+    setInputValue("#description", "");
+    setInputValue("#price", "");
+};
 
 //Hàm xóa sản phẩm
 function deleteProduct() {
-    var itemProduct = event.target.closest("li");
-    for(i = 0; i < products.length; i++) {
-        if(i == itemProduct.id) {
-            products.splice(i, 1);
-        }
-    };
-    renderProducts();
-}
+    let acceptDelete = confirm("Bạn có chắc muốn xóa sản phẩm này");
+    if (acceptDelete) {
+        var itemProduct = event.target.closest("li");
+        for (i = 0; i < products.length; i++) {
+            if (i == itemProduct.id) {
+                products.splice(i, 1);
+            }
+        };
+        renderProducts();
+    }
+};
 
 //Hàm sửa sản phẩm
 function editProduct() {
-    isEdit = true;
-    if(isEdit) {
+    if (handleisEditProduct()) {
         getHTML(".form-button").innerHTML = "Update";
+        tempProductId = event.target.closest("li").id;
+        setInputValue("#name", products[tempProductId].name);
+        setInputValue("#description", products[tempProductId].description);
+        setInputValue("#price", products[tempProductId].price);
     };
-    tempProductId = event.target.closest("li").id;
-    setInputValue("#name", products[tempProductId].name);
-    setInputValue("#description", products[tempProductId].description);
-    setInputValue("#price", products[tempProductId].price);
-}
+};
 
 //Xử lý tải trang
 document.addEventListener("DOMContentLoaded", () => {
@@ -117,15 +123,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //Xử lý tạo và update sản phẩm
 getHTML(".form-button").addEventListener("click", () => {
-    if(isEdit) {
+    if (isEditProduct) {
         products[tempProductId].name = getInputValue("#name");
         products[tempProductId].description = getInputValue("#description");
         products[tempProductId].price = getInputValue("#price");
         getHTML(".form-button").innerHTML = "Create";
-        isEdit = false
+        handleisEditProduct()
     } else {
         createProduct();
-    }
+    };
     renderProducts();
     focusInput();
 });
