@@ -119,7 +119,7 @@ button {
     border-radius: 8px;
 }
 
-.form>div {
+.form > div {
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
